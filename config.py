@@ -18,3 +18,10 @@ class Config:
     AUTH0_AUTHORIZE_URL = f"{AUTH0_BASE_URL}/authorize"
     AUTH0_TOKEN_URL = f"{AUTH0_BASE_URL}/oauth/token"
     AUTH0_USERINFO_URL = f"{AUTH0_BASE_URL}/userinfo"
+
+    # External URL overrides (optional)
+    # If set, this will be used to construct absolute callback/logout URLs
+    EXTERNAL_BASE_URL = os.environ.get('EXTERNAL_BASE_URL')  # e.g., "http://localhost:8000"
+    # Optional hints for url_for(_external=True)
+    SERVER_NAME = os.environ.get('SERVER_NAME')  # e.g., "localhost:8000"
+    PREFERRED_URL_SCHEME = os.environ.get('PREFERRED_URL_SCHEME')  # e.g., "http"
