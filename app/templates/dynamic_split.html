@@ -34,6 +34,7 @@
     
     <button id="start-stop-btn" onclick="toggleTimer()" disabled>Start</button>
     <button id="clear-btn" onclick="clearTable()" style="background-color: #dc3545;">Clear Table</button>
+    <button id="report-btn" onclick="generateReport()" style="background-color: #28a745;">Generate Report</button>
 </div>
 
 <div class="bill-table-container">
@@ -56,6 +57,19 @@
     <h3>Current Session</h3>
     <div id="timer-display">00:00:00</div>
     <div id="current-bill-info"></div>
+</div>
+
+<!-- Report Modal -->
+<div id="report-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <h3>Bill Rates</h3>
+        <p>Enter the monthly rates for each bill:</p>
+        <div id="bill-rates"></div>
+        <div style="margin-top: 20px;">
+            <button onclick="generatePDF()" style="background-color: #28a745;">Generate PDF Report</button>
+            <button onclick="closeModal()" style="background-color: #6c757d;">Cancel</button>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -305,6 +319,209 @@ function updateMonthDisplay() {
     
     document.getElementById('current-month').textContent = 
         `${monthNames[currentMonth]} ${currentYear}`;
+}
+
+function generateReport() {
+    // Check if there's any data
+    if (Object.keys(billData).length === 0) {
+        alert('No bill data available for this month.');
+        return;
+    }
+    
+    // Get unique bills
+    const bills = [...new Set(Object.values(billData).map(data => data.name))];
+    
+    // Create rate input fields
+    const ratesContainer = document.getElementById('bill-rates');
+    ratesContainer.innerHTML = '';
+    
+    bills.forEach(bill => {
+        const div = document.createElement('div');
+        div.style.marginBottom = '10px';
+        div.innerHTML = `
+            <label for="rate-${bill}" style="display: inline-block; width: 120px;">${bill}:</label>
+            <input type="number" id="rate-${bill}" placeholder="Monthly rate" min="0" step="0.01" style="width: 150px; padding: 5px;">
+        `;
+        ratesContainer.appendChild(div);
+    });
+    
+    // Show modal
+    document.getElementById('report-modal').style.display = 'block';
+}
+
+function closeModal() {
+    document.getElementById('report-modal').style.display = 'none';
+}
+
+function generatePDF() {
+    // Get rates
+    const bills = [...new Set(Object.values(billData).map(data => data.name))];
+    const rates = {};
+    let allRatesEntered = true;
+    
+    bills.forEach(bill => {
+        const rateInput = document.getElementById(`rate-${bill}`);
+        const rate = parseFloat(rateInput.value);
+        if (isNaN(rate) || rate < 0) {
+            allRatesEntered = false;
+            rateInput.style.borderColor = 'red';
+        } else {
+            rates[bill] = rate;
+            rateInput.style.borderColor = '';
+        }
+    });
+    
+    if (!allRatesEntered) {
+        alert('Please enter valid rates for all bills.');
+        return;
+    }
+    
+    // Calculate totals and splits
+    const reportData = calculateReportData(rates);
+    
+    // Generate PDF content
+    const pdfContent = generatePDFContent(reportData);
+    
+    // Create and download PDF
+    downloadPDF(pdfContent);
+    
+    // Close modal
+    closeModal();
+}
+
+function calculateReportData(rates) {
+    const billTotals = {};
+    const userTotals = { a: 0, b: 0 };
+    const reportLines = [];
+    
+    // Calculate totals for each bill
+    for (const key in billData) {
+        const data = billData[key];
+        if (!billTotals[data.name]) {
+            billTotals[data.name] = { totalTime: 0, users: {} };
+        }
+        billTotals[data.name].totalTime += data.userTime;
+        billTotals[data.name].users[data.startedBy] = data.userTime;
+    }
+    
+    // Generate report lines
+    for (const bill in billTotals) {
+        const totalTime = billTotals[bill].totalTime;
+        const rate = rates[bill];
+        const totalCost = rate;
+        
+        const userATime = billTotals[bill].users['a'] || 0;
+        const userBTime = billTotals[bill].users['b'] || 0;
+        
+        const userASplit = totalTime > 0 ? (userATime / totalTime) * totalCost : 0;
+        const userBSplit = totalTime > 0 ? (userBTime / totalTime) * totalCost : 0;
+        
+        reportLines.push({
+            bill: bill,
+            totalCost: totalCost,
+            userASplit: userASplit,
+            userBSplit: userBSplit,
+            userATime: userATime,
+            userBTime: userBTime,
+            totalTime: totalTime
+        });
+        
+        userTotals.a += userASplit;
+        userTotals.b += userBSplit;
+    }
+    
+    return {
+        month: document.getElementById('current-month').textContent,
+        lines: reportLines,
+        userTotals: userTotals
+    };
+}
+
+function generatePDFContent(data) {
+    const monthNames = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    
+    let content = `
+        <html>
+        <head>
+            <title>Bill Report - ${data.month}</title>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 20px; }
+                h1 { color: #333; text-align: center; }
+                table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                th { background-color: #f2f2f2; }
+                .total-row { font-weight: bold; background-color: #f8f9fa; }
+                .center { text-align: center; }
+            </style>
+        </head>
+        <body>
+            <h1>Bill Split Report - ${data.month}</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Bill</th>
+                        <th>Total Cost</th>
+                        <th>User A Time</th>
+                        <th>User B Time</th>
+                        <th>Total Time</th>
+                        <th>User A Split</th>
+                        <th>User B Split</th>
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+    
+    data.lines.forEach(line => {
+        content += `
+            <tr>
+                <td>${line.bill}</td>
+                <td>$${line.totalCost.toFixed(2)}</td>
+                <td>${formatTime(line.userATime)}</td>
+                <td>${formatTime(line.userBTime)}</td>
+                <td>${formatTime(line.totalTime)}</td>
+                <td>$${line.userASplit.toFixed(2)}</td>
+                <td>$${line.userBSplit.toFixed(2)}</td>
+            </tr>
+        `;
+    });
+    
+    content += `
+                </tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td><strong>TOTALS</strong></td>
+                        <td><strong>$${data.lines.reduce((sum, line) => sum + line.totalCost, 0).toFixed(2)}</strong></td>
+                        <td><strong>${formatTime(data.lines.reduce((sum, line) => sum + line.userATime, 0))}</strong></td>
+                        <td><strong>${formatTime(data.lines.reduce((sum, line) => sum + line.userBTime, 0))}</strong></td>
+                        <td><strong>${formatTime(data.lines.reduce((sum, line) => sum + line.totalTime, 0))}</strong></td>
+                        <td><strong>$${data.userTotals.a.toFixed(2)}</strong></td>
+                        <td><strong>$${data.userTotals.b.toFixed(2)}</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+            <p><strong>Generated on:</strong> ${new Date().toLocaleDateString()}</p>
+        </body>
+        </html>
+    `;
+    
+    return content;
+}
+
+function downloadPDF(content) {
+    // Create a new window and print the content
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(content);
+    printWindow.document.close();
+    printWindow.focus();
+    
+    // Wait for content to load, then print
+    setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+    }, 250);
 }
 </script>
 {% endblock %}
