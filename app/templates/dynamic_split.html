@@ -5,6 +5,12 @@
 {% block content %}
 <h2>Bill Tracking</h2>
 
+<div class="month-navigation">
+    <button id="prev-month" onclick="changeMonth(-1)">&lt;</button>
+    <h3 id="current-month">January 2024</h3>
+    <button id="next-month" onclick="changeMonth(1)">&gt;</button>
+</div>
+
 <div class="bill-controls">
     <div class="form-group">
         <label for="user-select">Select User:</label>
@@ -58,6 +64,8 @@ let isRunning = false;
 let startTime = null;
 let currentInterval = null;
 let billData = {};
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getFullYear();
 
 // Initialize the page
 document.addEventListener('DOMContentLoaded', function() {
@@ -79,6 +87,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Load existing data from localStorage
     loadBillData();
+    
+    // Initialize month display
+    updateMonthDisplay();
 });
 
 function toggleTimer() {
@@ -229,22 +240,27 @@ function formatTime(seconds) {
 }
 
 function saveBillData() {
-    localStorage.setItem('billData', JSON.stringify(billData));
+    const monthKey = `${currentYear}-${currentMonth}`;
+    localStorage.setItem(`billData-${monthKey}`, JSON.stringify(billData));
 }
 
 function loadBillData() {
-    const saved = localStorage.getItem('billData');
+    const monthKey = `${currentYear}-${currentMonth}`;
+    const saved = localStorage.getItem(`billData-${monthKey}`);
     if (saved) {
         billData = JSON.parse(saved);
-        updateBillTable();
+    } else {
+        billData = {};
     }
+    updateBillTable();
 }
 
 function clearTable() {
-    if (confirm('Are you sure you want to clear all bill data? This action cannot be undone.')) {
+    if (confirm('Are you sure you want to clear all bill data for this month? This action cannot be undone.')) {
         billData = {};
         updateBillTable();
-        localStorage.removeItem('billData');
+        const monthKey = `${currentYear}-${currentMonth}`;
+        localStorage.removeItem(`billData-${monthKey}`);
         
         // Reset timer if running
         if (isRunning) {
@@ -258,6 +274,37 @@ function clearTable() {
         document.getElementById('start-stop-btn').textContent = 'Start';
         document.getElementById('start-stop-btn').style.backgroundColor = '#007bff';
     }
+}
+
+function changeMonth(direction) {
+    // Save current month data before switching
+    saveBillData();
+    
+    // Change month
+    currentMonth += direction;
+    
+    // Handle year rollover
+    if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+    } else if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+    }
+    
+    // Update display and load new month data
+    updateMonthDisplay();
+    loadBillData();
+}
+
+function updateMonthDisplay() {
+    const monthNames = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    
+    document.getElementById('current-month').textContent = 
+        `${monthNames[currentMonth]} ${currentYear}`;
 }
 </script>
 {% endblock %}
