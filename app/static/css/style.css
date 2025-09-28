@@ -12,21 +12,80 @@ header {
     background-color: #333;
     color: white;
     padding: 20px;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    position: relative; /* allow absolutely centering nav-center */
 }
 
-header h1 {
-    margin: 0;
-    font-size: 2em;
+.brand {
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: white;
+    letter-spacing: 0.6px;
+    background: linear-gradient(90deg, #7b2ff7 0%, #9b5cf6 40%, #6d28d9 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: #fff; /* fallback for browsers that don't support background-clip:text */
+    text-transform: none;
+    padding: 4px 8px;
+}
+
+@media (max-width: 768px) {
+    .brand {
+        font-size: 1.2rem;
+    }
 }
 
 nav {
-    margin-top: 10px;
+    margin-top: 0;
     display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+}
+
+.nav-left {
+    flex: 0 0 160px; /* reserve space under the brand */
+}
+
+.nav-center {
+    display: flex;
+    gap: 18px;
     justify-content: center;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
+    flex: 1 1 auto;
+    /* absolutely center this region so it's visually centered regardless of right-side width */
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+.nav-center a {
+    color: white;
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+}
+
+.nav-center a:hover {
+    background-color: rgba(255,255,255,0.06);
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    flex: 0 0 300px;
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3; /* keep auth controls above center nav */
 }
 
 nav a {
@@ -83,12 +142,31 @@ nav a:hover {
 @media (max-width: 768px) {
     nav {
         flex-direction: column;
-        gap: 10px;
+        gap: 8px;
+        align-items: stretch;
     }
     
     .user-menu, .auth-menu {
         margin-left: 0;
         margin-top: 10px;
+    }
+
+    .nav-left, .nav-right {
+        flex: 0 0 auto;
+    }
+
+    .nav-center {
+        justify-content: center;
+        padding: 8px 0;
+        position: static;
+        transform: none;
+    }
+
+    .nav-right {
+        position: static;
+        transform: none;
+        right: auto;
+        top: auto;
     }
 }
 
@@ -107,17 +185,17 @@ main {
         align-items: stretch;
         min-height: calc(100vh - 180px); /* full-height minus header/footer */
     }
-
     .demo-panel {
         flex: 1 1 60%;
-        background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+        background: linear-gradient(180deg, #1f2937 0%, #111827 100%); /* darker panel to match header/footer */
+        color: #e6f0ff;
         border-radius: 12px;
         padding: 40px;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        box-shadow: 0 6px 24px rgba(35,47,60,0.08);
+        box-shadow: 0 10px 40px rgba(2,6,23,0.6);
     }
 
     .demo-side {
@@ -129,7 +207,7 @@ main {
 
     .status {
         margin: 12px 0 24px 0;
-        color: #555;
+        color: #cfe6ff;
         font-weight: 600;
     }
 
@@ -145,6 +223,9 @@ main {
         cursor: pointer;
         transition: transform 0.12s ease, box-shadow 0.12s ease;
     }
+
+    /* ensure buttons inside dark panel are readable */
+    .demo-panel .big-switch { color: #082; }
 
     .big-switch:active { transform: translateY(2px) scale(0.99); }
 
@@ -180,13 +261,14 @@ main {
     }
 
     .card {
-        background: white;
+        background: linear-gradient(180deg, #ffffff, #f7f9ff);
         border-radius: 12px;
         padding: 18px;
-        box-shadow: 0 6px 18px rgba(15,20,30,0.06);
+        box-shadow: 0 10px 30px rgba(15,20,30,0.08);
+        border: 1px solid rgba(34,50,90,0.06);
     }
 
-    .card h3 { margin: 0 0 10px 0; font-size: 1.05rem; color: #2b3a67; }
+    .card h3 { margin: 0 0 10px 0; font-size: 1.05rem; color: #223056; }
 
     .current-name { font-size: 1.2rem; font-weight: 700; color: #1b6eff; }
 
@@ -201,29 +283,20 @@ main {
         justify-content: space-between;
         align-items: center;
         padding: 10px 12px;
-        border-radius: 8px;
-        background: linear-gradient(180deg, #f6f8ff 0%, #ffffff 100%);
-        border: 1px solid rgba(43,56,100,0.06);
+        border-radius: 10px;
+        background: linear-gradient(180deg, #fbfdff 0%, #f3f6ff 100%);
+        border: 1px solid rgba(43,56,100,0.08);
         font-weight: 600;
+        box-shadow: 0 6px 18px rgba(12,18,36,0.06);
     }
 
     .timer-name { color: #223056; }
     .timer-secs { color: #556; font-family: 'Courier New', monospace; }
 
-h2 {
-    color: #333;
-    border-bottom: 2px solid #007bff;
-    padding-bottom: 10px;
+.feature-box h3, .info-box h3 {
+    margin-top: 0;
+    color: #007bff;
 }
-
-.feature-box, .info-box {
-    background-color: #f8f9fa;
-    padding: 15px;
-    margin: 15px 0;
-    border-left: 4px solid #007bff;
-    border-radius: 5px;
-}
-
 .feature-box h3, .info-box h3 {
     margin-top: 0;
     color: #007bff;
@@ -302,9 +375,11 @@ footer p {
     align-items: center;
     gap: 20px;
     margin: 15px 0;
-    padding: 10px;
-    background-color: #f8f9fa;
-    border-radius: 10px;
+    padding: 12px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
 }
 
 .month-navigation button {
@@ -333,14 +408,16 @@ footer p {
 }
 
 .bill-controls {
-    background-color: #f8f9fa;
+    background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
     padding: 20px;
-    border-radius: 10px;
+    border-radius: 12px;
     margin: 20px 0;
     display: flex;
     gap: 20px;
     align-items: end;
     flex-wrap: wrap;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 14px 40px rgba(0,0,0,0.65);
 }
 
 .bill-controls .form-group {
@@ -367,51 +444,55 @@ footer p {
     overflow-x: auto;
 }
 
+.bill-table-container { margin: 20px 0; overflow-x: auto; }
+
 #bill-table {
     width: 100%;
     border-collapse: collapse;
-    background-color: white;
-    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border: 1px solid rgba(255,255,255,0.06);
+    box-shadow: 0 18px 60px rgba(0,0,0,0.75);
 }
 
 #bill-table th {
-    background-color: #333;
-    color: white;
-    padding: 15px;
+    background: rgba(255,255,255,0.03);
+    color: var(--text);
+    padding: 12px 16px;
     text-align: left;
-    font-weight: bold;
+    font-weight: 700;
 }
 
 #bill-table td {
-    padding: 15px;
-    border-bottom: 1px solid #eee;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    color: var(--text);
 }
 
-#bill-table tr:hover {
-    background-color: #f8f9fa;
-}
+#bill-table tr:hover { background: rgba(255,255,255,0.01); }
 
 .current-timer {
-    background-color: #e9ecef;
-    padding: 20px;
-    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+    padding: 22px;
+    border-radius: 12px;
     text-align: center;
     margin: 20px 0;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.7);
 }
 
 #timer-display {
     font-size: 2.5em;
     font-weight: bold;
-    color: #007bff;
+    color: var(--accent);
     margin: 10px 0;
     font-family: 'Courier New', monospace;
 }
 
 #current-bill-info {
     font-size: 1.2em;
-    color: #666;
+    color: var(--muted);
     margin-top: 10px;
 }
 
@@ -481,21 +562,19 @@ footer p {
 
 /* --- Dark theme overrides (site-wide) --- */
 :root {
-    --bg: #0c0c0d;
-    --grid: rgba(255,255,255,0.06);
-    --text: #e5e7eb;
-    --muted: #9ca3af;
-    --accent: #60a5fa;
-    --card: rgba(255,255,255,0.04);
-    --card-strong: rgba(255,255,255,0.09);
-    --border: rgba(255,255,255,0.08);
+    --bg: #0f1720; /* darker gray instead of pure black */
+    --grid: rgba(255,255,255,0.04);
+    --text: #f8fafc;
+    --muted: #c7d2da;
+    --accent: #c084fc; /* purple accent */
+    /* stronger card/border tones so panels contrast more on black */
+    --card: rgba(255,255,255,0.06);
+    --card-strong: rgba(255,255,255,0.10);
+    --border: rgba(255,255,255,0.12);
 }
 
 body {
-    background: radial-gradient(circle at 0 0, transparent 0, transparent 18px, var(--grid) 19px, transparent 20px),
-                radial-gradient(circle at 10px 10px, transparent 0, transparent 18px, var(--grid) 19px, transparent 20px),
-                var(--bg);
-    background-size: 20px 20px;
+    background: var(--bg);
     color: var(--text);
 }
 
@@ -562,23 +641,80 @@ footer {
 
 .bill-controls { background: var(--card); border: 1px solid var(--border); }
 
-#bill-table { background: transparent; box-shadow: none; }
-#bill-table th { background: var(--card); color: var(--text); }
-#bill-table td { border-bottom: 1px solid var(--border); color: var(--text); }
-#bill-table tr:hover { background: rgba(255,255,255,0.04); }
+.bill-table-container { margin: 20px 0; overflow-x: auto; }
 
-.current-timer { background: var(--card); color: var(--text); }
-#timer-display { color: var(--accent); }
+#bill-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.01));
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 18px 60px rgba(2,6,23,0.75);
+}
+
+#bill-table th {
+    background: rgba(255,255,255,0.02);
+    color: var(--text);
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 700;
+}
+
+#bill-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    color: var(--text);
+}
+
+#bill-table tr:hover { background: rgba(255,255,255,0.01); }
+
+.current-timer {
+    background: rgba(255,255,255,0.02);
+    color: var(--text);
+    padding: 18px;
+    border-radius: 8px;
+    text-align: center;
+    margin: 20px 0;
+}
+
+#timer-display { color: var(--accent); font-weight: 700; font-size: 1.6rem; }
 #current-bill-info { color: var(--muted); }
 
-.card { background: var(--card-strong); box-shadow: none; border: 1px solid var(--border); }
+.card {
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+    box-shadow: 0 12px 36px rgba(2,6,23,0.7);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 16px;
+}
 .card h3 { color: var(--text); }
-.timer-item { background: rgba(255,255,255,0.03); border: 1px solid var(--border); }
+.timer-item {
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.005));
+    border: 1px solid rgba(255,255,255,0.04);
+    padding: 12px;
+    border-radius: 10px;
+    box-shadow: 0 8px 26px rgba(0,0,0,0.6);
+}
 .timer-name { color: var(--text); }
 .timer-secs { color: var(--muted); }
 
 .modal { background-color: rgba(0,0,0,0.7); }
 .modal-content { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+
+/* Ensure the timer-list and totals list sit on a panel as well */
+.timer-list, .totals-list {
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.04);
+}
+
+/* Profile link styling: clickable name+avatar */
+.profile-link { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: var(--text); }
+.profile-link:hover { opacity: 0.95; transform: translateY(-1px); }
+.profile-link .profile-pic { width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.06); }
+.profile-link .user-name { font-weight: 600; color: var(--text); }
 
 /* Center all titles */
 h1, h2, h3, h4 { text-align: center; }

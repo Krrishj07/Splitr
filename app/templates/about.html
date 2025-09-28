@@ -2,29 +2,7 @@
 
 {% block head %}
 <style>
-  :root {
-    --bg: #0c0c0d;
-    --grid: rgba(255,255,255,0.06);
-    --text: #e5e7eb;
-    --muted: #9ca3af;
-    --accent: #60a5fa;
-    --card: rgba(255,255,255,0.04);
-    --border: rgba(255,255,255,0.08);
-  }
-
-  body {
-    background: radial-gradient(circle at 0 0, transparent 0, transparent 18px, var(--grid) 19px, transparent 20px),
-                radial-gradient(circle at 10px 10px, transparent 0, transparent 18px, var(--grid) 19px, transparent 20px),
-                var(--bg);
-    background-size: 20px 20px;
-    color: var(--text);
-  }
-
-  header, footer { background: transparent; border-bottom: 1px solid var(--border); }
-  header h1 { color: var(--text); }
-  nav a { color: var(--muted); }
-  nav a:hover { color: var(--text); }
-
+  /* Do not override global variables or body background here — use the app-wide dark theme */
   main { max-width: 900px; width: 92%; margin: 3rem auto; background: transparent; box-shadow: none; }
 
   .about h2 { font-size: 2rem; margin-bottom: 0.5rem; }

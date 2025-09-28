@@ -124,7 +124,8 @@ def register_routes(app, auth_service):
     @app.route('/demo')
     def demo():
         """Demo page for the light-switch + facial recognition"""
-        return render_template('demo.html', timers=timers, totals=totals)
+        user = auth_service.get_user_profile()
+        return render_template('demo.html', timers=timers, totals=totals, user=user)
 
     @app.route('/demo/recognize', methods=['POST'])
     def demo_recognize():
@@ -225,3 +226,10 @@ def register_routes(app, auth_service):
         if current_user['name']:
             snapshot['current'] = { 'name': current_user['name'], 'elapsed': now - current_user['start'] }
         return jsonify(snapshot)
+
+    @app.route('/demo/clear_totals', methods=['POST'])
+    def demo_clear_totals():
+        """Clear accumulated totals for demo (in-memory)."""
+        totals.clear()
+        # also clear timers if desired (keep timers running as-is — only clearing totals)
+        return jsonify({'status': 'ok'})

@@ -110,17 +110,26 @@ class Auth0Service:
     
     def logout(self):
         """Logout user"""
+        # Clear local session first
         session.clear()
-        if Config.EXTERNAL_BASE_URL:
-            base = Config.EXTERNAL_BASE_URL.rstrip('/')
-            return_url = f"{base}{url_for('index')}"
-        else:
-            return_url = url_for('index', _external=True)
-        return redirect(
-            f"https://{Config.AUTH0_DOMAIN}/v2/logout?"
-            f"returnTo={return_url}&"
-            f"client_id={Config.AUTH0_CLIENT_ID}"
-        )
+        # Redirect locally to home to avoid Auth0 returnTo errors when the
+        # configured allowed logout URLs do not match. If you prefer to use
+        # Auth0's global logout (recommended for fully terminating the Auth0
+        # session), uncomment the block below and ensure the returnTo URL is
+        # registered in your Auth0 application settings.
+        return redirect(url_for('index'))
+
+        # --- Optional: use Auth0 logout redirect (requires returnTo registration) ---
+        # if Config.EXTERNAL_BASE_URL:
+        #     base = Config.EXTERNAL_BASE_URL.rstrip('/')
+        #     return_url = f"{base}{url_for('index')}"
+        # else:
+        #     return_url = url_for('index', _external=True)
+        # return redirect(
+        #     f"https://{Config.AUTH0_DOMAIN}/v2/logout?"
+        #     f"returnTo={return_url}&"
+        #     f"client_id={Config.AUTH0_CLIENT_ID}"
+        # )
     
     def get_user_profile(self):
         """Get current user profile from session"""
