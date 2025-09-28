@@ -43,12 +43,14 @@ nav {
     margin-top: 0;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     width: 100%;
     gap: 10px;
+    flex-wrap: wrap;
 }
 
 .nav-left {
-    flex: 0 0 160px; /* reserve space under the brand */
+    flex: 1 1 120px; /* reserve space under the brand */
 }
 
 .nav-center {
@@ -56,12 +58,7 @@ nav {
     gap: 18px;
     justify-content: center;
     align-items: center;
-    flex: 1 1 auto;
-    /* absolutely center this region so it's visually centered regardless of right-side width */
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1;
+    flex: 1 1 0;
 }
 
 .nav-center a {
@@ -69,6 +66,7 @@ nav {
     text-decoration: none;
     padding: 6px 10px;
     border-radius: 6px;
+    white-space: nowrap;
 }
 
 .nav-center a:hover {
@@ -80,12 +78,7 @@ nav {
     align-items: center;
     justify-content: flex-end;
     gap: 12px;
-    flex: 0 0 300px;
-    position: absolute;
-    right: 18px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 3; /* keep auth controls above center nav */
+    flex: 1 1 200px;
 }
 
 nav a {
