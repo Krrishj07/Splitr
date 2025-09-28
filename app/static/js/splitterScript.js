@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- 1. SELECTING HTML ELEMENTS ---
+    // Selecting HTML element
     const form = document.getElementById('expense-form');
     const splitMethodRadios = document.querySelectorAll('input[name="split-method"]');
     const percentageInputs = document.getElementById('percentage-inputs');
@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultsSection = document.getElementById('results-section');
     const balancesSection = document.getElementById('balances-section');
     
-    // --- 2. CORE FUNCTIONS ---
+    // Core Funtions
 
     // Function to show/hide dynamic input fields
     function updateVisibleInputs() {
@@ -35,23 +35,23 @@ document.addEventListener('DOMContentLoaded', () => {
         balancesSection.innerHTML = summaryHTML + finalSummary;
     }
 
-    // --- 3. EVENT LISTENERS ---
+    // Dependent Functions
     
-    // Listener for radio button changes
+    // checking for radio button changes
     splitMethodRadios.forEach(radio => radio.addEventListener('change', updateVisibleInputs));
 
-    // Listener for the main form submission
+    // checking for the main form submission
     form.addEventListener('submit', (event) => {
         event.preventDefault();
 
-        // THIS IS THE KEY CHANGE: Balances are reset for every new calculation
+        // Balances are reset for every new calculation
         const balances = { 'Person A': 0, 'Person B': 0 };
 
         const totalAmount = parseFloat(document.getElementById('total-amount').value);
         const payer = document.getElementById('payer').value;
         const splitMethod = document.querySelector('input[name="split-method"]:checked').value;
 
-        // Validation...
+        // Validation
         if (isNaN(totalAmount) || totalAmount <= 0) {
             resultsSection.innerHTML = `<p style="color: red;">Please enter a valid total amount.</p>`;
             return;
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let personAShare = 0;
         let personBShare = 0;
 
-        // Calculation logic...
+        // Calculation logic
         switch (splitMethod) {
             case 'equally':
                 personAShare = totalAmount / 2;
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
         balances['Person A'] -= personAShare;
         balances['Person B'] -= personBShare;
 
-        // Display results...
+        // Display results
         const description = document.getElementById('description').value || 'This expense';
         resultsSection.innerHTML = `<p>For "${description}", Person A's share is $${personAShare.toFixed(2)} and Person B's share is $${personBShare.toFixed(2)}.</p>`;
         
@@ -110,6 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateFinalBalances(balances);
     });
 
-    // --- 4. INITIALIZE APP ---
+    // Initalize
     updateVisibleInputs();
 });
