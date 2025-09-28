@@ -555,19 +555,27 @@ footer p {
 
 /* --- Dark theme overrides (site-wide) --- */
 :root {
-    --bg: #0f1720; /* darker gray instead of pure black */
+    --bg: #0f1720; /* darker gray */
     --grid: rgba(255,255,255,0.04);
     --text: #f8fafc;
     --muted: #c7d2da;
-    --accent: #c084fc; /* purple accent */
+    --accent: #60a5fa; /* blue accent */
     /* stronger card/border tones so panels contrast more on black */
     --card: rgba(255,255,255,0.06);
     --card-strong: rgba(255,255,255,0.10);
     --border: rgba(255,255,255,0.12);
+    /* blue tint overlay */
+    --tint1: rgba(59,130,246,0.14);
+    --tint2: rgba(37,99,235,0.08);
 }
 
 body {
-    background: var(--bg);
+    background:
+      radial-gradient(circle at 0 0, transparent 0, transparent 18px, var(--grid) 19px, transparent 20px),
+      radial-gradient(circle at 10px 10px, transparent 0, transparent 18px, var(--grid) 19px, transparent 20px),
+      linear-gradient(180deg, var(--tint1) 0%, var(--tint2) 40%, rgba(0,0,0,0) 80%),
+      var(--bg);
+    background-size: 20px 20px, 20px 20px, auto, auto;
     color: var(--text);
 }
 
