@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-card">
+        <h2>Sign In to Your Account</h2>
+        <p>Choose your preferred sign-in method</p>
+        
+        <!-- Social Login Button -->
+        <div class="social-login">
+            <a href="/auth/login" class="auth-btn auth-btn-primary">
+                <i class="icon-lock"></i>
+                Sign in with Auth0
+            </a>
+            <p class="login-subtitle">Supports Google, Facebook, GitHub, and more</p>
+        </div>
+        
+        <!-- Passwordless Login -->
+        <div class="passwordless-section">
+            <h3>Or sign in without a password</h3>
+            <form id="passwordless-form" class="passwordless-form">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required 
+                           placeholder="Enter your email address">
+                </div>
+                <button type="submit" class="auth-btn auth-btn-secondary">
+                    Send Magic Link
+                </button>
+            </form>
+            <div id="passwordless-message" class="message hidden"></div>
+        </div>
+        
+        <!-- Features -->
+        <div class="auth-features">
+            <h3>Secure Authentication Features</h3>
+            <ul>
+                <li>🔐 Multi-Factor Authentication (MFA)</li>
+                <li>📧 Passwordless Login</li>
+                <li>🔗 Social Sign-In</li>
+                <li>🛡️ Enterprise Security</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<style>
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+    padding: 20px;
+}
+
+.login-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    max-width: 450px;
+    width: 100%;
+    text-align: center;
+}
+
+.login-card h2 {
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 28px;
+}
+
+.login-card p {
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.social-login {
+    margin-bottom: 30px;
+}
+
+.auth-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-bottom: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.auth-btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.auth-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.auth-btn-secondary {
+    background: #f8f9fa;
+    color: #333;
+    border: 2px solid #e9ecef;
+}
+
+.auth-btn-secondary:hover {
+    background: #e9ecef;
+    border-color: #dee2e6;
+}
+
+.login-subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-top: 5px;
+}
+
+.passwordless-section {
+    border-top: 1px solid #eee;
+    padding-top: 30px;
+    margin-bottom: 30px;
+}
+
+.passwordless-section h3 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 18px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e9ecef;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.auth-features {
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+    text-align: left;
+}
+
+.auth-features h3 {
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 16px;
+    text-align: center;
+}
+
+.auth-features ul {
+    list-style: none;
+    padding: 0;
+}
+
+.auth-features li {
+    padding: 8px 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.message {
+    padding: 12px;
+    border-radius: 6px;
+    margin-top: 15px;
+    font-weight: 500;
+}
+
+.message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.hidden {
+    display: none;
+}
+
+.icon-lock::before {
+    content: "🔐";
+    margin-right: 8px;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('passwordless-form');
+    const messageDiv = document.getElementById('passwordless-message');
+    
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('email').value;
+        const submitBtn = form.querySelector('button[type="submit"]');
+        
+        // Update button state
+        submitBtn.textContent = 'Sending...';
+        submitBtn.disabled = true;
+        
+        try {
+            const response = await fetch('/auth/passwordless', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `email=${encodeURIComponent(email)}`
+            });
+            
+            const data = await response.json();
+            
+            messageDiv.className = 'message';
+            messageDiv.classList.remove('hidden');
+            
+            if (response.ok) {
+                messageDiv.classList.add('success');
+                messageDiv.textContent = data.message;
+                form.reset();
+            } else {
+                messageDiv.classList.add('error');
+                messageDiv.textContent = data.error;
+            }
+        } catch (error) {
+            messageDiv.className = 'message error';
+            messageDiv.classList.remove('hidden');
+            messageDiv.textContent = 'An error occurred. Please try again.';
+        }
+        
+        // Reset button state
+        submitBtn.textContent = 'Send Magic Link';
+        submitBtn.disabled = false;
+    });
+});
+</script>
+{% endblock %}

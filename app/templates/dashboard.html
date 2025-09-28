@@ -1,0 +1,245 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h2>Welcome to your Dashboard</h2>
+        <p>You're securely signed in with Auth0</p>
+    </div>
+    
+    <div class="dashboard-content">
+        <div class="user-card">
+            <div class="user-avatar">
+                {% if user.picture %}
+                    <img src="{{ user.picture }}" alt="Profile Picture">
+                {% else %}
+                    <div class="avatar-placeholder">{{ user.name[0] if user.name else user.email[0] }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="user-info">
+                <h3>{{ user.name or 'User' }}</h3>
+                <p class="user-email">{{ user.email }}</p>
+                
+                {% if user.email_verified %}
+                    <span class="verification-badge verified">✓ Email Verified</span>
+                {% else %}
+                    <span class="verification-badge unverified">⚠ Email Not Verified</span>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="dashboard-actions">
+            <div class="action-card">
+                <h4>🔐 Security Settings</h4>
+                <p>Manage your authentication preferences and security settings</p>
+                <a href="/profile" class="action-btn">View Profile</a>
+            </div>
+            
+            <div class="action-card">
+                <h4>📱 Multi-Factor Authentication</h4>
+                <p>Enhance your account security with MFA</p>
+                <button class="action-btn" onclick="enableMFA()">Configure MFA</button>
+            </div>
+            
+            <div class="action-card">
+                <h4>🔗 Connected Accounts</h4>
+                <p>Manage your social login connections</p>
+                <button class="action-btn" onclick="manageConnections()">Manage</button>
+            </div>
+        </div>
+        
+        <div class="recent-activity">
+            <h3>Recent Activity</h3>
+            <div class="activity-list">
+                <div class="activity-item">
+                    <span class="activity-icon">🔑</span>
+                    <div class="activity-details">
+                        <p>Successful login</p>
+                        <small>Just now</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.dashboard-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.dashboard-header h2 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.dashboard-header p {
+    color: #666;
+    font-size: 16px;
+}
+
+.dashboard-content {
+    display: grid;
+    gap: 30px;
+}
+
+.user-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.user-avatar img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.avatar-placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.user-info h3 {
+    margin: 0 0 5px 0;
+    color: #333;
+}
+
+.user-email {
+    color: #666;
+    margin: 0 0 10px 0;
+}
+
+.verification-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.verification-badge.verified {
+    background: #d4edda;
+    color: #155724;
+}
+
+.verification-badge.unverified {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.dashboard-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.action-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    text-align: center;
+}
+
+.action-card h4 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 18px;
+}
+
+.action-card p {
+    color: #666;
+    margin: 0 0 20px 0;
+    line-height: 1.5;
+}
+
+.action-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.recent-activity {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+}
+
+.recent-activity h3 {
+    margin: 0 0 20px 0;
+    color: #333;
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-icon {
+    font-size: 24px;
+}
+
+.activity-details p {
+    margin: 0 0 5px 0;
+    color: #333;
+    font-weight: 500;
+}
+
+.activity-details small {
+    color: #666;
+}
+</style>
+
+<script>
+function enableMFA() {
+    alert('MFA configuration would redirect to Auth0 dashboard for setup.');
+    // In a real implementation, this would redirect to Auth0's MFA setup
+}
+
+function manageConnections() {
+    alert('Account management would redirect to Auth0 dashboard.');
+    // In a real implementation, this would show connected social accounts
+}
+</script>
+{% endblock %}
