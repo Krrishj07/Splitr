@@ -12,40 +12,6 @@ A modern Flask web application featuring secure authentication with Auth0, inclu
 - **🎨 Modern UI**: Responsive design with authentication-aware navigation
 - **🔐 Protected Routes**: Dashboard and profile pages with authentication requirements
 
-## Project Structure
-
-```
-my_webapp/
-│
-├── app/                         # Main application package
-│   ├── static/                  # Static files (CSS, JS, images)
-│   │   ├── css/
-│   │   │   └── style.css
-│   │   ├── js/
-│   │   │   └── script.js
-│   │   └── img/
-│   │       └── logo.png
-│   │
-│   ├── templates/              # HTML pages
-│   │   ├── base.html           # Base layout
-│   │   ├── index.html          # Home page
-│   │   ├── about.html          # About page
-│   │   └── contact.html        # Contact page
-│   │
-│   ├── routes.py               # Route handlers (views)
-│   ├── models.py               # Database models
-│   ├── forms.py                # Form definitions
-│   └── __init__.py             # App factory
-│
-├── instance/                   # Database and instance files
-│   └── app.db                  # SQLite database file
-│
-├── config.py                   # Configuration settings
-├── run.py                      # Application entry point
-├── requirements.txt            # Python dependencies
-└── README.md                   # This file
-```
-
 ## Installation
 
 1. **Clone or download the project**
@@ -76,16 +42,9 @@ my_webapp/
    ```
 
 6. **Open your browser**
-   Navigate to `http://localhost:5000`
+   Navigate to `http://localhost:8000`
 
 ## Configuration
-
-The application uses environment variables for configuration:
-
-- `FLASK_ENV`: Set to 'development', 'production', or 'testing'
-- `SECRET_KEY`: Secret key for session management
-- `DATABASE_URL`: Database connection string
-- `PORT`: Port number (default: 5000)
 
 ## Usage
 
