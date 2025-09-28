@@ -1,18 +1,30 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Demo: Light Switch (simulated)</h2>
-<div id="status">Idle</div>
-<button id="switch">Turn On (recognize)</button>
+<div class="demo-hero">
+  <div class="demo-panel">
+    <h2>Light Switch Demo</h2>
+    <div id="status" class="status">Idle</div>
+  <button id="switch" class="big-switch off">Turn On</button>
+  </div>
 
-<h3>Currently recognized</h3>
-<div id="current">Nobody</div>
+  <div class="demo-side">
+    <div class="card">
+      <h3>Currently recognized</h3>
+      <div id="current" class="current-name">Nobody</div>
+    </div>
 
-<h3>Active timers</h3>
-<ul id="timers"></ul>
+    <div class="card">
+      <h3>Active timers</h3>
+      <div id="timers" class="timer-list"></div>
+    </div>
 
-<h3>Totals</h3>
-<ul id="totals"></ul>
+    <div class="card">
+      <h3>Totals</h3>
+      <div id="totals" class="totals-list"></div>
+    </div>
+  </div>
+</div>
 
 <script>
 const switchBtn = document.getElementById('switch');
@@ -28,55 +40,55 @@ async function fetchStatus() {
     const data = await res.json();
     // populate current
     const cur = data.current;
+    const currentEl = document.getElementById('current');
     if (cur && cur.name) {
-      document.getElementById('current').textContent = `${cur.name} — ${Math.round(cur.elapsed)}s`;
+      const txt = `${cur.name} — ${Math.round(cur.elapsed)}s`;
+      // pulse animation if name changed
+      if (lastRecognized !== cur.name) {
+        currentEl.classList.remove('pulse');
+        // force reflow to restart animation
+        void currentEl.offsetWidth;
+        currentEl.classList.add('pulse');
+      }
+      currentEl.textContent = txt;
+      lastRecognized = cur.name;
     } else {
-      document.getElementById('current').textContent = 'Nobody';
+      currentEl.textContent = 'Nobody';
+      lastRecognized = null;
     }
 
-    // populate timers
+    // populate timers (card list)
     timersEl.innerHTML = '';
     const timers = data.timers || {};
     const names = Object.keys(timers);
     if (names.length === 0) {
-      timersEl.innerHTML = '<li>No active timers</li>';
+      timersEl.innerHTML = '<div class="timer-item">No active timers</div>';
     } else {
       for (const name of names) {
-        const li = document.createElement('li');
+        const div = document.createElement('div');
+        div.className = 'timer-item';
         const secs = Math.round(timers[name]);
-        li.innerHTML = `${name} — ${secs}s <button data-name="${name}" class="stop-btn">Stop</button>`;
-        timersEl.appendChild(li);
+        div.innerHTML = `<span class="timer-name">${name}</span><span class="timer-secs">${secs}s</span>`;
+        timersEl.appendChild(div);
       }
     }
 
-    // totals
+    // totals (card list)
     totalsEl.innerHTML = '';
     const totals = data.totals || {};
     const tnames = Object.keys(totals);
     if (tnames.length === 0) {
-      totalsEl.innerHTML = '<li>No totals yet</li>';
+      totalsEl.innerHTML = '<div class="timer-item">No totals yet</div>';
     } else {
       for (const name of tnames) {
-        const li = document.createElement('li');
-        li.textContent = `${name} — ${Math.round(totals[name])}s`;
-        totalsEl.appendChild(li);
+        const div = document.createElement('div');
+        div.className = 'timer-item';
+        div.innerHTML = `<span class="timer-name">${name}</span><span class="timer-secs">${Math.round(totals[name])}s</span>`;
+        totalsEl.appendChild(div);
       }
     }
 
-    // wire stop buttons
-    document.querySelectorAll('.stop-btn').forEach(b => {
-      b.onclick = async (ev) => {
-        const name = ev.target.dataset.name;
-        const res = await fetch('/demo/stop', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({name}) });
-        const d = await res.json();
-        if (d.status === 'ok') {
-          statusEl.textContent = `Stopped ${name}: ${Math.round(d.elapsed)}s (total ${Math.round(d.total)}s)`;
-          fetchStatus();
-        } else {
-          statusEl.textContent = 'Stop failed: ' + d.message;
-        }
-      };
-    });
+    // stop buttons removed — timers are displayed read-only in this UI
   } catch (e) {
     console.error('status fetch failed', e);
   }
@@ -86,26 +98,31 @@ setInterval(fetchStatus, 1000);
 fetchStatus();
 
 switchBtn.addEventListener('click', async () => {
-    statusEl.textContent = 'Opening camera and recognizing... (press q to cancel)';
-    switchBtn.disabled = true;
-    try {
-        const res = await fetch('/demo/recognize', { method: 'POST' });
-        const data = await res.json();
-        if (data.status === 'ok') {
-            statusEl.textContent = `Recognized: ${data.name}`;
-      if (data.name && data.name !== 'Unknown') {
-        lastRecognized = data.name;
-        statusEl.textContent = `Recognized: ${data.name}. Timer started.`;
-        // refresh status immediately
-        fetchStatus();
+  // toggle camera on/off via /demo/switch
+  switchBtn.disabled = true;
+  try {
+    const res = await fetch('/demo/switch', { method: 'POST' });
+    const data = await res.json();
+    if (data.status === 'ok') {
+      if (data.camera_on) {
+        switchBtn.textContent = 'Turn Off';
+        switchBtn.classList.remove('off');
+        switchBtn.classList.add('on');
+        statusEl.textContent = 'Camera on — searching...';
+      } else {
+        switchBtn.textContent = 'Turn On';
+        switchBtn.classList.remove('on');
+        switchBtn.classList.add('off');
+        statusEl.textContent = 'Camera off';
       }
-        } else {
-            statusEl.textContent = 'Recognition error: ' + data.message;
-        }
-    } catch (e) {
-        statusEl.textContent = 'Request failed: ' + e;
+      fetchStatus();
+    } else {
+      statusEl.textContent = 'Switch error: ' + data.message;
     }
-    switchBtn.disabled = false;
+  } catch (e) {
+    statusEl.textContent = 'Request failed: ' + e;
+  }
+  switchBtn.disabled = false;
 });
 </script>
 

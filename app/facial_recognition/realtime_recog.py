@@ -40,7 +40,7 @@ MAX_FRAMES = int(os.environ.get('MAX_FRAMES', '0'))
 LOG_FRAMES = int(os.environ.get('LOG_FRAMES', '0'))
 
 # how long to keep showing camera after recognition (seconds)
-RECOG_HOLD_SECS = float(os.environ.get('RECOG_HOLD_SECS', '3'))
+RECOG_HOLD_SECS = float(os.environ.get('RECOG_HOLD_SECS', '5'))
 
 # helper to match
 def match_embedding(embedding, threshold=None):
@@ -189,10 +189,15 @@ while True:
                             emb = resnet(inp).cpu().numpy()[0]
                         name, dist = match_embedding(emb)
                         label = f"{name} ({dist:.2f})" if dist is not None else name
-                        # If single-exit mode is requested and we have a known match, remember it and keep running
-                        if args.single_exit and name != 'Unknown' and recognized_name is None:
+                        # If we found a known person and haven't recorded anyone yet, remember them and notify caller
+                        if name != 'Unknown' and recognized_name is None:
                             recognized_name = name
                             recognized_time = time.time()
+                            try:
+                                # print a machine-friendly result token so the caller can parse reliably
+                                print(f"RECOG_RESULT:{recognized_name}", flush=True)
+                            except Exception:
+                                pass
                 except Exception as e:
                     label = f'Model error'
                     print('Model inference error for a face:', e)
@@ -224,7 +229,8 @@ while True:
                 # if the hold time has passed, print and exit
                 if time.time() - recognized_time >= RECOG_HOLD_SECS:
                     try:
-                        print(recognized_name)
+                        # print a machine-friendly result token so the caller can parse reliably
+                        print(f"RECOG_RESULT:{recognized_name}")
                     except Exception:
                         pass
                     cap.release()
@@ -246,3 +252,9 @@ while True:
 
 cap.release()
 cv2.destroyAllWindows()
+# If we exited naturally (no recognition) and were run in single-exit mode, emit a marker so callers know
+if args.single_exit and recognized_name is None:
+    try:
+        print('RECOG_RESULT:Unknown')
+    except Exception:
+        pass

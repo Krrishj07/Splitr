@@ -2,6 +2,8 @@ from flask import render_template, request, redirect, url_for, flash, jsonify
 import time
 import subprocess
 import os
+import threading
+import sys
 
 
 def register_routes(app, auth_service):
@@ -92,6 +94,32 @@ def register_routes(app, auth_service):
     totals = {}
     # Currently recognized user (most recent)
     current_user = {'name': None, 'start': None}
+    # background recognition process state
+    recognize_proc = {'proc': None}
+    recognize_thread = {'thread': None}
+
+    def _reader_thread(proc):
+        # read stdout lines and look for RECOG_RESULT tokens
+        try:
+            for raw in proc.stdout:
+                line = raw.strip()
+                if not line:
+                    continue
+                # parse token
+                if line.startswith('RECOG_RESULT:'):
+                    name = line.split(':', 1)[1].strip()
+                    # start timer for first recognized person only
+                    if name and name != 'Unknown' and current_user['name'] is None:
+                        timers[name] = time.time()
+                        current_user['name'] = name
+                        current_user['start'] = timers[name]
+        except Exception:
+            pass
+        finally:
+            try:
+                proc.stdout.close()
+            except Exception:
+                pass
 
     @app.route('/demo')
     def demo():
@@ -104,10 +132,16 @@ def register_routes(app, auth_service):
         # Run the facial recognition script in single-exit mode. The script will print the recognized
         # person's name on stdout and exit. We call it with an explicit path so it finds its known/ folder.
         script_path = os.path.join(os.path.dirname(__file__), 'facial_recognition', 'realtime_recog.py')
+        # legacy endpoint: run a single-shot recognition (keeps existing behavior)
         try:
             proc = subprocess.run(['python3', script_path, '--single-exit'], capture_output=True, text=True, timeout=300)
             out = proc.stdout.strip().splitlines()
-            name = out[-1] if out else 'Unknown'
+            # look for the RECOG_RESULT:<name> token in stdout
+            name = 'Unknown'
+            for line in out:
+                if line.startswith('RECOG_RESULT:'):
+                    name = line.split(':', 1)[1].strip()
+                    break
         except subprocess.TimeoutExpired:
             return jsonify({'status': 'error', 'message': 'Recognition timed out'}), 504
         except Exception as e:
@@ -133,6 +167,49 @@ def register_routes(app, auth_service):
             current_user['name'] = None
             current_user['start'] = None
         return jsonify({'status': 'ok', 'elapsed': elapsed, 'total': totals[name]})
+
+    @app.route('/demo/switch', methods=['POST'])
+    def demo_switch():
+        """Toggle the demo camera (light switch). When switched on, start background recognition.
+        When switched off, stop background recognition and stop the current user's timer if any.
+        """
+        # if process is running -> stop it
+        if recognize_proc['proc'] is not None and recognize_proc['proc'].poll() is None:
+            try:
+                recognize_proc['proc'].terminate()
+            except Exception:
+                try:
+                    recognize_proc['proc'].kill()
+                except Exception:
+                    pass
+            # wait briefly
+            try:
+                recognize_proc['proc'].wait(timeout=1)
+            except Exception:
+                pass
+            recognize_proc['proc'] = None
+            # if someone was being billed, stop them now
+            if current_user['name']:
+                name = current_user['name']
+                if name in timers:
+                    elapsed = time.time() - timers.pop(name)
+                    totals[name] = totals.get(name, 0) + elapsed
+                current_user['name'] = None
+                current_user['start'] = None
+            return jsonify({'status': 'ok', 'camera_on': False})
+
+        # start background recognition process
+        script_path = os.path.join(os.path.dirname(__file__), 'facial_recognition', 'realtime_recog.py')
+        try:
+            # launch subprocess and capture stdout to read tokens
+            proc = subprocess.Popen([sys.executable, script_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+            recognize_proc['proc'] = proc
+            th = threading.Thread(target=_reader_thread, args=(proc,), daemon=True)
+            recognize_thread['thread'] = th
+            th.start()
+            return jsonify({'status': 'ok', 'camera_on': True})
+        except Exception as e:
+            return jsonify({'status': 'error', 'message': str(e)}), 500
 
     @app.route('/demo/status')
     def demo_status():
