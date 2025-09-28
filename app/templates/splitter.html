@@ -1,21 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Splitter</title>
-    <!-- Link to CSS File-->
-    <link rel="stylesheet" href="splitterStyle.css">
-</head>
-<body>
+{% extends "base.html" %}
 
-    <header>
-        <h1>Dynamic Splitter</h1>
-    </header>
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/splitterStyle.css') }}">
+{% endblock %}
 
-    <main>
-        <!-- capture all the expense details -->
-        <form id="expense-form">
+{% block content %}
+<div class="splitter-container">
+    <h2>Expense Splitter</h2>
+
+    <div class="splitter-card">
+    <!-- capture all the expense details -->
+    <form id="expense-form">
 
             <!-- Basic Expense Details -->
             <fieldset>
@@ -88,29 +83,25 @@
 
             <!-- The main submit button -->
             <button type="submit">Add Expense</button>
-        </form>
+    </form>
 
-        <hr>
+    <hr>
 
-        <!-- Summary of who owes who for this specific expense -->
-        <div id="results-section">
-            <p>The expense breakdown will appear here once calculated.</p>
-        </div>
+    <!-- Summary of who owes who for this specific expense -->
+    <div id="results-section">
+        <p>The expense breakdown will appear here once calculated.</p>
+    </div>
 
-        <hr>
+    <hr>
 
-        <!-- Final balances -->
-        <div id="balances-section">
-            <h2>Final Totals:</h2>
-            <p>No data to show.</p>
-        </div>
-    </main>
-
-    <footer>
-        <p>&copy; 2025 Dynamic Splitter</p>
-    </footer>
+    <!-- Final balances -->
+    <div id="balances-section">
+        <h2>Final Totals:</h2>
+        <p>No data to show.</p>
+    </div>
 
     <!-- Link to the JavaScript file -->
-    <script src="splitterScript.js"></script>
-</body>
-</html>
+    <script src="{{ url_for('static', filename='js/splitterScript.js') }}"></script>
+    </div>
+</div>
+{% endblock %}

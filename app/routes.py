@@ -88,6 +88,12 @@ def register_routes(app, auth_service):
         user = auth_service.get_user_profile()
         return render_template('dynamic_split.html', user=user)
 
+    @app.route('/expenses_split')
+    def expenses_split():
+        """Link to the static expense splitter page"""
+        user = auth_service.get_user_profile()
+        return render_template('splitter.html', user=user)
+
     # Simple in-memory timers for demo (name -> start_ts)
     timers = {}
     # Accumulated totals (seconds)
