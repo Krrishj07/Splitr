@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dynamic Splitter</title>
-    <!-- Link to the CSS file for styling -->
+    <!-- Link to CSS File-->
     <link rel="stylesheet" href="splitterStyle.css">
 </head>
 <body>
@@ -14,10 +14,10 @@
     </header>
 
     <main>
-        <!-- The form will capture all the expense details -->
+        <!-- capture all the expense details -->
         <form id="expense-form">
 
-            <!-- Section 1: Basic Expense Details -->
+            <!-- Basic Expense Details -->
             <fieldset>
                 <legend>Expense Details</legend>
                 
@@ -44,7 +44,7 @@
                 </div>
             </fieldset>
 
-            <!-- Section 2: How the bill should be split -->
+            <!--  How the bill should be split -->
             <fieldset>
                 <legend>Split Method</legend>
                 <div class="split-options">
@@ -60,7 +60,7 @@
                 </div>
             </fieldset>
 
-            <!-- Section 3: Dynamic inputs that will appear based on the split method -->
+            <!-- Dynamic inputs that will appear based on the split method -->
             <div id="split-details">
                 <!-- Percentage Inputs -->
                 <div id="percentage-inputs" class="split-details-container hidden">
@@ -73,7 +73,7 @@
                         <input type="number" id="person-b-percentage" placeholder="e.g., 40" min="0" max="100">
                     </div>
                 </div>
-                <!-- Exact Amount Inputs -->
+                <!-- Exact Dollar Amount Inputs -->
                 <div id="amount-inputs" class="split-details-container hidden">
                      <div class="form-group">
                         <label for="person-a-amount">Person A's Share ($):</label>
@@ -86,23 +86,22 @@
                 </div>
             </div>
 
-            <!-- The main action button -->
+            <!-- The main submit button -->
             <button type="submit">Add Expense</button>
         </form>
 
         <hr>
 
-        <!-- Section 4: Summary of who owes whom for this specific expense -->
+        <!-- Summary of who owes who for this specific expense -->
         <div id="results-section">
             <p>The expense breakdown will appear here once calculated.</p>
         </div>
 
         <hr>
 
-        <!-- Section 5: Final balances -->
+        <!-- Final balances -->
         <div id="balances-section">
             <h2>Final Totals:</h2>
-            <!-- Balance summary will be generated here by JavaScript -->
             <p>No data to show.</p>
         </div>
     </main>
@@ -111,7 +110,7 @@
         <p>&copy; 2025 Dynamic Splitter</p>
     </footer>
 
-    <!-- Link to the JavaScript file for functionality -->
+    <!-- Link to the JavaScript file -->
     <script src="splitterScript.js"></script>
 </body>
 </html>
