@@ -478,3 +478,107 @@ footer p {
 .modal-content button:hover {
     opacity: 0.9;
 }
+
+/* --- Dark theme overrides (site-wide) --- */
+:root {
+    --bg: #0c0c0d;
+    --grid: rgba(255,255,255,0.06);
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --accent: #60a5fa;
+    --card: rgba(255,255,255,0.04);
+    --card-strong: rgba(255,255,255,0.09);
+    --border: rgba(255,255,255,0.08);
+}
+
+body {
+    background: radial-gradient(circle at 0 0, transparent 0, transparent 18px, var(--grid) 19px, transparent 20px),
+                radial-gradient(circle at 10px 10px, transparent 0, transparent 18px, var(--grid) 19px, transparent 20px),
+                var(--bg);
+    background-size: 20px 20px;
+    color: var(--text);
+}
+
+header {
+    background: transparent;
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+}
+
+header h1 { color: var(--text); }
+
+nav a { color: var(--muted); }
+nav a:hover { color: var(--text); background: transparent; }
+
+main {
+    background: transparent;
+    box-shadow: none;
+}
+
+h2 { color: var(--text); border-bottom-color: rgba(96,165,250,0.6); }
+
+.feature-box, .info-box {
+    background: var(--card);
+    border-left-color: var(--accent);
+    color: var(--text);
+}
+
+ul, li { color: var(--text); }
+
+input, textarea, select {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    color: var(--text);
+}
+
+input::placeholder, textarea::placeholder { color: var(--muted); }
+
+button {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+}
+button:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.16); }
+
+.login-btn, .logout-btn {
+    background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+    color: #081018 !important;
+}
+.login-btn:hover, .logout-btn:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%) !important;
+}
+
+footer {
+    background: transparent;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+}
+
+/* Dynamic Split dark styling */
+.month-navigation { background: var(--card); border: 1px solid var(--border); }
+.month-navigation h3 { color: var(--text); }
+.month-navigation button { background: var(--card); border: 1px solid var(--border); color: var(--text); }
+.month-navigation button:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.16); }
+
+.bill-controls { background: var(--card); border: 1px solid var(--border); }
+
+#bill-table { background: transparent; box-shadow: none; }
+#bill-table th { background: var(--card); color: var(--text); }
+#bill-table td { border-bottom: 1px solid var(--border); color: var(--text); }
+#bill-table tr:hover { background: rgba(255,255,255,0.04); }
+
+.current-timer { background: var(--card); color: var(--text); }
+#timer-display { color: var(--accent); }
+#current-bill-info { color: var(--muted); }
+
+.card { background: var(--card-strong); box-shadow: none; border: 1px solid var(--border); }
+.card h3 { color: var(--text); }
+.timer-item { background: rgba(255,255,255,0.03); border: 1px solid var(--border); }
+.timer-name { color: var(--text); }
+.timer-secs { color: var(--muted); }
+
+.modal { background-color: rgba(0,0,0,0.7); }
+.modal-content { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+
+/* Center all titles */
+h1, h2, h3, h4 { text-align: center; }

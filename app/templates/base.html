@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Simple App</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block head %}{% endblock %}
 </head>
 <body>
     <header>
-        <h1>Bill Buddy</h1>
+        <h1>Splitr</h1>
         <nav>
             <a href="/">Home</a>
             <a href="/about">About</a>

@@ -1,5 +1,52 @@
 {% extends "base.html" %}
 
+{% block head %}
+<style>
+  :root {
+    --bg: #0c0c0d;
+    --grid: rgba(255,255,255,0.06);
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --accent: #60a5fa;
+    --card: rgba(255,255,255,0.04);
+    --border: rgba(255,255,255,0.08);
+  }
+
+  body {
+    background: radial-gradient(circle at 0 0, transparent 0, transparent 18px, var(--grid) 19px, transparent 20px),
+                radial-gradient(circle at 10px 10px, transparent 0, transparent 18px, var(--grid) 19px, transparent 20px),
+                var(--bg);
+    background-size: 20px 20px;
+    color: var(--text);
+  }
+
+  header, footer { background: transparent; border-bottom: 1px solid var(--border); }
+  header h1 { color: var(--text); }
+  nav a { color: var(--muted); }
+  nav a:hover { color: var(--text); }
+
+  main { max-width: 900px; width: 92%; margin: 3rem auto; background: transparent; box-shadow: none; }
+
+  .about h2 { font-size: 2rem; margin-bottom: 0.5rem; }
+  .about p { color: var(--muted); }
+
+  .about .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin: 1.25rem 0 2rem; }
+  .about .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; }
+  .about .card h4 { margin: 0 0 0.5rem; color: var(--text); }
+  .about .card p, .about li { color: var(--muted); }
+
+  .about a { color: var(--accent); text-decoration: none; }
+  .about a:hover { text-decoration: underline; }
+
+  .about ul, .about ol { padding-left: 1.2rem; }
+  .about h3 { margin-top: 2rem; }
+
+  .cta { margin-top: 2rem; display: flex; gap: 0.75rem; flex-wrap: wrap; }
+  .btn { display: inline-block; padding: 0.6rem 1rem; border: 1px solid var(--border); border-radius: 10px; color: var(--text); background: var(--card); }
+  .btn:hover { border-color: var(--accent); color: #fff; }
+</style>
+{% endblock %}
+
 {% block content %}
 <section class="about">
   <h2>About This Project</h2>
@@ -11,12 +58,24 @@
   </p>
 
   <h3>What You Can Do</h3>
-  <ul>
-    <li><strong>Expense Splitter</strong>: Split a single expense equally, by percentage, or by exact amounts.</li>
-    <li><strong>Dynamic Split (Bill Tracking)</strong>: Track time spent by each user on recurring bills (e.g., Internet, Electricity) and generate a monthly report.</li>
-    <li><strong>Facial Recognition Demo</strong>: Prototype that recognizes a user to start/stop a timer automatically for hands‑free tracking.</li>
-    <li><strong>Secure Login</strong>: Auth0‑backed authentication with a simple dashboard and profile.</li>
-  </ul>
+  <div class="cards">
+    <div class="card">
+      <h4>Expense Splitter</h4>
+      <p>Split one‑off expenses equally, by percentage, or exact amounts.</p>
+    </div>
+    <div class="card">
+      <h4>Dynamic Split</h4>
+      <p>Track per‑user time on recurring bills and generate a monthly report.</p>
+    </div>
+    <div class="card">
+      <h4>Recognition Demo</h4>
+      <p>Prototype that auto‑starts timers when a user is recognized locally.</p>
+    </div>
+    <div class="card">
+      <h4>Secure Auth</h4>
+      <p>Auth0‑backed sign‑in with simple dashboard and profile.</p>
+    </div>
+  </div>
 
   <h3>How It Works</h3>
   <ol>
@@ -48,5 +107,11 @@
     You can also try the <a href="/dynamic_split">Dynamic Split</a> view or the
     <a href="/demo">Demo</a> from the navigation.
   </p>
+
+  <div class="cta">
+    <a class="btn" href="/dynamic_split">Open Dynamic Split</a>
+    <a class="btn" href="/demo">Try the Demo</a>
+    <a class="btn" href="/contact">Contact Us</a>
+  </div>
 </section>
 {% endblock %}
