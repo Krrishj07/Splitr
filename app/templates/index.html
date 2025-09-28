@@ -1,7 +1,263 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Welcome!</h2>
-<p>This is a simple Flask web app.</p>
-<p>It has 3 pages: Home, About, and Contact.</p>
+{% if user %}
+    <div class="welcome-section">
+        <h2>Welcome back, {{ user.name or user.email }}! 👋</h2>
+        <p>You're securely signed in with Auth0.</p>
+        
+        <div class="quick-actions">
+            <a href="/dashboard" class="action-card">
+                <h3>🏠 Dashboard</h3>
+                <p>View your account overview and recent activity</p>
+            </a>
+            
+            <a href="/profile" class="action-card">
+                <h3>👤 Profile</h3>
+                <p>Manage your account settings and security</p>
+            </a>
+        </div>
+    </div>
+{% else %}
+    <div class="hero-section">
+        <h2>🔐 Secure Authentication with Auth0</h2>
+        <p>Experience modern authentication with social sign-in, MFA, and passwordless login.</p>
+        
+        <div class="cta-section">
+            <a href="/login" class="cta-button">Get Started - Sign In Now</a>
+            <p class="cta-subtitle">Free, secure, and takes less than 30 seconds</p>
+        </div>
+        
+        <!-- Bill Splitting Feature -->
+        <div class="bill-splitting-info">
+            <h3>💰 Smart Bill Splitting Made Easy</h3>
+            <p>Split expenses fairly among friends, roommates, or travel companions with our intelligent bill splitting feature.</p>
+            
+            <div class="splitting-features">
+                <div class="split-feature">
+                    <div class="split-icon">📊</div>
+                    <h4>Dynamic Calculations</h4>
+                    <p>Automatically calculate each person's share based on what they ordered or consumed.</p>
+                </div>
+                
+                <div class="split-feature">
+                    <div class="split-icon">🎯</div>
+                    <h4>Fair & Accurate</h4>
+                    <p>Handle tips, taxes, and custom splits with precision - no more manual calculations.</p>
+                </div>
+                
+                <div class="split-feature">
+                    <div class="split-icon">�</div>
+                    <h4>Easy Sharing</h4>
+                    <p>Send payment requests and track who's paid - all in one secure platform.</p>
+                </div>
+            </div>
+            
+            <a href="/dynamic_split" class="split-cta-btn">Try Bill Splitter</a>
+        </div>
+    </div>
+{% endif %}
+
+<style>
+.welcome-section {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.welcome-section h2 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.hero-section {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.hero-section h2 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 2.5em;
+}
+
+.hero-section p {
+    color: #666;
+    font-size: 1.2em;
+    margin-bottom: 40px;
+}
+
+.auth-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin: 40px 0;
+}
+
+.feature-card, .action-card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.feature-card:hover, .action-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.feature-icon {
+    font-size: 3em;
+    margin-bottom: 15px;
+}
+
+.feature-card h3, .action-card h3 {
+    color: #333;
+    margin: 0 0 15px 0;
+    font-size: 1.3em;
+}
+
+.feature-card p, .action-card p {
+    color: #666;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.cta-section {
+    margin: 50px 0 30px 0;
+}
+
+.cta-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 30px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1em;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+}
+
+.cta-subtitle {
+    color: #666;
+    margin-top: 15px;
+    font-size: 0.9em;
+}
+
+/* Bill Splitting Styles */
+.bill-splitting-info {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 40px;
+    border-radius: 15px;
+    margin-top: 40px;
+    text-align: center;
+}
+
+.bill-splitting-info h3 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 2em;
+}
+
+.bill-splitting-info > p {
+    color: #666;
+    font-size: 1.1em;
+    margin-bottom: 30px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.splitting-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+    margin: 30px 0;
+}
+
+.split-feature {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.split-feature:hover {
+    transform: translateY(-5px);
+}
+
+.split-icon {
+    font-size: 2.5em;
+    margin-bottom: 15px;
+}
+
+.split-feature h4 {
+    color: #333;
+    margin: 0 0 10px 0;
+    font-size: 1.2em;
+}
+
+.split-feature p {
+    color: #666;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.split-cta-btn {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    padding: 12px 25px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1em;
+    transition: all 0.3s ease;
+    display: inline-block;
+    margin-top: 20px;
+}
+
+.split-cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+}
+
+@media (max-width: 768px) {
+    .hero-section h2 {
+        font-size: 2em;
+    }
+    
+    .auth-features, .splitting-features {
+        grid-template-columns: 1fr;
+    }
+    
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+    
+    .bill-splitting-info {
+        padding: 25px 15px;
+    }
+    
+    .bill-splitting-info h3 {
+        font-size: 1.8em;
+    }
+}
+</style>
 {% endblock %}

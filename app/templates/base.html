@@ -15,6 +15,24 @@
             <a href="/contact">Contact</a>
             <a href="/dynamic_split">Dynamic Split</a>
             <a href="/demo">Demo</a>
+      
+            {% if user %}
+                <div class="user-menu">
+                    <a href="/dashboard">Dashboard</a>
+                    <a href="/profile">Profile</a>
+                    <span class="user-info">
+                        {% if user.picture %}
+                            <img src="{{ user.picture }}" alt="Profile" class="profile-pic">
+                        {% endif %}
+                        {{ user.name or user.email }}
+                    </span>
+                    <a href="/logout" class="logout-btn">Logout</a>
+                </div>
+            {% else %}
+                <div class="auth-menu">
+                    <a href="/login" class="login-btn">Login</a>
+                </div>
+            {% endif %}
         </nav>
     </header>
 

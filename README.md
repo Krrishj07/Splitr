@@ -1,16 +1,16 @@
-# My Web App
+# 🔐 Secure Flask App with Auth0
 
-A modern Flask web application with a clean, responsive design.
+A modern Flask web application featuring secure authentication with Auth0, including social sign-in, multi-factor authentication (MFA), and passwordless login.
 
-## Features
+## 🚀 Features
 
-- **Modern UI**: Bootstrap-based responsive design
-- **Database Integration**: SQLAlchemy with SQLite
-- **Form Handling**: WTForms for secure form processing
-- **Template Engine**: Jinja2 templates with inheritance
-- **Static Files**: Organized CSS, JavaScript, and images
-- **Contact Form**: Working contact form with validation
-- **Sample Data**: Pre-populated with sample users and posts
+- **🔒 Auth0 Integration**: Complete authentication system
+- **🔗 Social Sign-In**: Google, GitHub, Facebook, and more
+- **🛡️ Multi-Factor Authentication**: SMS, email, and authenticator apps
+- **📧 Passwordless Login**: Magic link authentication via email
+- **👤 User Management**: Profile management and security settings
+- **🎨 Modern UI**: Responsive design with authentication-aware navigation
+- **🔐 Protected Routes**: Dashboard and profile pages with authentication requirements
 
 ## Project Structure
 
