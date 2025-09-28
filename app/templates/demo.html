@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="demo-hero">
+  <div class="demo-panel">
+    <h2>Light Switch Demo</h2>
+    <div id="status" class="status">Idle</div>
+  <button id="switch" class="big-switch off">Turn On</button>
+  </div>
+
+  <div class="demo-side">
+    <div class="card">
+      <h3>Currently recognized</h3>
+      <div id="current" class="current-name">Nobody</div>
+    </div>
+
+    <div class="card">
+      <h3>Active timers</h3>
+      <div id="timers" class="timer-list"></div>
+    </div>
+
+    <div class="card">
+      <h3>Totals</h3>
+      <div id="totals" class="totals-list"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const switchBtn = document.getElementById('switch');
+const statusEl = document.getElementById('status');
+const timersEl = document.getElementById('timers');
+const totalsEl = document.getElementById('totals');
+
+let lastRecognized = null;
+
+async function fetchStatus() {
+  try {
+    const res = await fetch('/demo/status');
+    const data = await res.json();
+    // populate current
+    const cur = data.current;
+    const currentEl = document.getElementById('current');
+    if (cur && cur.name) {
+      const txt = `${cur.name} — ${Math.round(cur.elapsed)}s`;
+      // pulse animation if name changed
+      if (lastRecognized !== cur.name) {
+        currentEl.classList.remove('pulse');
+        // force reflow to restart animation
+        void currentEl.offsetWidth;
+        currentEl.classList.add('pulse');
+      }
+      currentEl.textContent = txt;
+      lastRecognized = cur.name;
+    } else {
+      currentEl.textContent = 'Nobody';
+      lastRecognized = null;
+    }
+
+    // populate timers (card list)
+    timersEl.innerHTML = '';
+    const timers = data.timers || {};
+    const names = Object.keys(timers);
+    if (names.length === 0) {
+      timersEl.innerHTML = '<div class="timer-item">No active timers</div>';
+    } else {
+      for (const name of names) {
+        const div = document.createElement('div');
+        div.className = 'timer-item';
+        const secs = Math.round(timers[name]);
+        div.innerHTML = `<span class="timer-name">${name}</span><span class="timer-secs">${secs}s</span>`;
+        timersEl.appendChild(div);
+      }
+    }
+
+    // totals (card list)
+    totalsEl.innerHTML = '';
+    const totals = data.totals || {};
+    const tnames = Object.keys(totals);
+    if (tnames.length === 0) {
+      totalsEl.innerHTML = '<div class="timer-item">No totals yet</div>';
+    } else {
+      for (const name of tnames) {
+        const div = document.createElement('div');
+        div.className = 'timer-item';
+        div.innerHTML = `<span class="timer-name">${name}</span><span class="timer-secs">${Math.round(totals[name])}s</span>`;
+        totalsEl.appendChild(div);
+      }
+    }
+
+    // stop buttons removed — timers are displayed read-only in this UI
+  } catch (e) {
+    console.error('status fetch failed', e);
+  }
+}
+
+setInterval(fetchStatus, 1000);
+fetchStatus();
+
+switchBtn.addEventListener('click', async () => {
+  // toggle camera on/off via /demo/switch
+  switchBtn.disabled = true;
+  try {
+    const res = await fetch('/demo/switch', { method: 'POST' });
+    const data = await res.json();
+    if (data.status === 'ok') {
+      if (data.camera_on) {
+        switchBtn.textContent = 'Turn Off';
+        switchBtn.classList.remove('off');
+        switchBtn.classList.add('on');
+        statusEl.textContent = 'Camera on — searching...';
+      } else {
+        switchBtn.textContent = 'Turn On';
+        switchBtn.classList.remove('on');
+        switchBtn.classList.add('off');
+        statusEl.textContent = 'Camera off';
+      }
+      fetchStatus();
+    } else {
+      statusEl.textContent = 'Switch error: ' + data.message;
+    }
+  } catch (e) {
+    statusEl.textContent = 'Request failed: ' + e;
+  }
+  switchBtn.disabled = false;
+});
+</script>
+
+{% endblock %}

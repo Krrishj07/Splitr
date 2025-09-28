@@ -95,6 +95,20 @@ The application uses environment variables for configuration:
 - **About** (`/about`): Information about the application
 - **Contact** (`/contact`): Contact form
 
+### Demo (light-switch)
+
+This project includes a simple demo that simulates a smart light switch billed per-user using face recognition. It's intended for presentations and judges during the hackathon.
+
+How it works:
+- Click the "Demo" link in the nav. Press the "Turn On (recognize)" button — the server will open your webcam and run a facial recognition script against the images in `app/facial_recognition/known/`.
+- When a known person is recognized, the server will start a timer for that person. Use the Stop button next to the active timer to stop it; the demo accumulates totals per person and shows them on the page.
+
+Notes & troubleshooting:
+- The demo requires a working camera and the dependencies listed in `requirements.txt` (OpenCV, torch, facenet-pytorch, Pillow, numpy). Install them inside your virtual environment with `pip install -r requirements.txt`.
+- On macOS you may need to grant camera permissions to the terminal or Python process.
+- The facial recognition script uses a lazy model initialization. If you see issues related to MPS/CUDA or camera backends, try setting environment variables such as `FORCE_TORCH_DEVICE=cpu` before running.
+
+
 ### Database Models
 
 - **User**: User accounts with username and email
