@@ -37,6 +37,33 @@
     <button id="report-btn" onclick="generateReport()" style="background-color: #28a745;">Generate Report</button>
 </div>
 
+<!-- Manual entry form -->
+<div class="bill-controls" style="margin-top: 10px;">
+    <div class="form-group">
+        <label for="manual-user">Manual User:</label>
+        <select id="manual-user">
+            <option value="">Choose a user...</option>
+            <option value="a">User A</option>
+            <option value="b">User B</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="manual-bill">Manual Bill:</label>
+        <select id="manual-bill">
+            <option value="">Choose a bill...</option>
+            <option value="A.C.">A.C.</option>
+            <option value="Electricity">Electricity</option>
+            <option value="Water">Water</option>
+            <option value="Internet">Internet</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="manual-seconds">Seconds:</label>
+        <input type="number" id="manual-seconds" placeholder="e.g., 3600" min="0">
+    </div>
+    <button onclick="addManualEntry()" style="background-color: #17a2b8;">Add Entry</button>
+</div>
+
 <div class="bill-table-container">
     <table id="bill-table">
         <thead>
@@ -288,6 +315,34 @@ function clearTable() {
         document.getElementById('start-stop-btn').textContent = 'Start';
         document.getElementById('start-stop-btn').style.backgroundColor = '#007bff';
     }
+}
+
+// Add manual entry without using timer
+function addManualEntry() {
+    const user = document.getElementById('manual-user').value;
+    const bill = document.getElementById('manual-bill').value;
+    let secs = parseInt(document.getElementById('manual-seconds').value || '0', 10);
+    if (!user || !bill) {
+        alert('Please select a user and bill for manual entry.');
+        return;
+    }
+    if (isNaN(secs) || secs < 0) {
+        alert('Please enter a valid number of seconds (0 or greater).');
+        return;
+    }
+
+    const key = `${user}-${bill}`;
+    if (!billData[key]) {
+        billData[key] = { name: bill, startedBy: user, userTime: 0 };
+    }
+    billData[key].userTime += secs;
+    saveBillData();
+    updateBillTable();
+
+    // clear inputs
+    document.getElementById('manual-user').value = '';
+    document.getElementById('manual-bill').value = '';
+    document.getElementById('manual-seconds').value = '';
 }
 
 function changeMonth(direction) {
