@@ -1,1 +1,7 @@
 Flask==2.3.3
+# Computer vision / recognition dependencies (add if you plan to run the facial recognition demo)
+numpy
+opencv-python
+torch
+facenet-pytorch
+Pillow
