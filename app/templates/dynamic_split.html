@@ -27,6 +27,7 @@
     </div>
     
     <button id="start-stop-btn" onclick="toggleTimer()" disabled>Start</button>
+    <button id="clear-btn" onclick="clearTable()" style="background-color: #dc3545;">Clear Table</button>
 </div>
 
 <div class="bill-table-container">
@@ -236,6 +237,26 @@ function loadBillData() {
     if (saved) {
         billData = JSON.parse(saved);
         updateBillTable();
+    }
+}
+
+function clearTable() {
+    if (confirm('Are you sure you want to clear all bill data? This action cannot be undone.')) {
+        billData = {};
+        updateBillTable();
+        localStorage.removeItem('billData');
+        
+        // Reset timer if running
+        if (isRunning) {
+            stopTimer();
+        }
+        
+        // Reset dropdowns
+        document.getElementById('user-select').value = '';
+        document.getElementById('bill-select').value = '';
+        document.getElementById('start-stop-btn').disabled = true;
+        document.getElementById('start-stop-btn').textContent = 'Start';
+        document.getElementById('start-stop-btn').style.backgroundColor = '#007bff';
     }
 }
 </script>
