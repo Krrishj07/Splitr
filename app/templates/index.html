@@ -65,7 +65,7 @@
 }
 
 .welcome-section h2 {
-    color: #333;
+    color: var(--text);
     margin-bottom: 10px;
 }
 
@@ -82,13 +82,13 @@
 }
 
 .hero-section h2 {
-    color: #333;
+    color: var(--text);
     margin-bottom: 15px;
     font-size: 2.5em;
 }
 
 .hero-section p {
-    color: #666;
+    color: var(--muted);
     font-size: 1.2em;
     margin-bottom: 40px;
 }
@@ -101,20 +101,18 @@
 }
 
 .feature-card, .action-card {
-    background: white;
+    background: var(--card-strong);
     padding: 25px;
     border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: none;
+    border: 1px solid var(--border);
     text-decoration: none;
     color: inherit;
     transition: all 0.3s ease;
     text-align: center;
 }
 
-.feature-card:hover, .action-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-}
+.feature-card:hover, .action-card:hover { transform: translateY(-5px); }
 
 .feature-icon {
     font-size: 3em;
@@ -122,13 +120,13 @@
 }
 
 .feature-card h3, .action-card h3 {
-    color: #333;
+    color: var(--text);
     margin: 0 0 15px 0;
     font-size: 1.3em;
 }
 
 .feature-card p, .action-card p {
-    color: #666;
+    color: var(--muted);
     line-height: 1.6;
     margin: 0;
 }
@@ -162,7 +160,7 @@
 
 /* Bill Splitting Styles */
 .bill-splitting-info {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    background: var(--card);
     padding: 40px;
     border-radius: 15px;
     margin-top: 40px;
@@ -170,13 +168,13 @@
 }
 
 .bill-splitting-info h3 {
-    color: #333;
+    color: var(--text);
     margin-bottom: 15px;
     font-size: 2em;
 }
 
 .bill-splitting-info > p {
-    color: #666;
+    color: var(--muted);
     font-size: 1.1em;
     margin-bottom: 30px;
     max-width: 600px;
@@ -192,10 +190,11 @@
 }
 
 .split-feature {
-    background: white;
+    background: var(--card-strong);
     padding: 25px;
     border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: none;
+    border: 1px solid var(--border);
     transition: transform 0.3s ease;
 }
 
@@ -209,13 +208,13 @@
 }
 
 .split-feature h4 {
-    color: #333;
+    color: var(--text);
     margin: 0 0 10px 0;
     font-size: 1.2em;
 }
 
 .split-feature p {
-    color: #666;
+    color: var(--muted);
     line-height: 1.5;
     margin: 0;
 }
