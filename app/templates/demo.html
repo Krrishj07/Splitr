@@ -22,6 +22,9 @@
     <div class="card">
       <h3>Totals</h3>
       <div id="totals" class="totals-list"></div>
+      <div style="margin-top:10px; display:flex; gap:8px; justify-content:flex-end;">
+        <button id="clear-totals-btn" class="login-btn" title="Clear accumulated totals">Clear totals</button>
+      </div>
     </div>
   </div>
 </div>
@@ -123,6 +126,24 @@ switchBtn.addEventListener('click', async () => {
     statusEl.textContent = 'Request failed: ' + e;
   }
   switchBtn.disabled = false;
+});
+
+// Clear totals button handler
+document.getElementById('clear-totals-btn').addEventListener('click', async () => {
+  const btn = document.getElementById('clear-totals-btn');
+  btn.disabled = true;
+  try {
+    const res = await fetch('/demo/clear_totals', { method: 'POST' });
+    const data = await res.json();
+    if (data.status === 'ok') {
+      fetchStatus();
+    } else {
+      console.error('clear_totals failed', data);
+    }
+  } catch (e) {
+    console.error('clear_totals request failed', e);
+  }
+  btn.disabled = false;
 });
 </script>
 

@@ -3,29 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Simple App</title>
+    <title>Splitr</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     {% block head %}{% endblock %}
 </head>
 <body>
     <header>
-        <h1>Splitr</h1>
+        <div class="brand">Splitr</div>
         <nav>
-            <a href="/">Home</a>
-            <a href="/about">About</a>
-            <a href="/dynamic_split">Dynamic Split</a>
-            <a href="/demo">Demo</a>
-      
+            <div class="nav-left">
+                <!-- left intentionally blank so brand sits on left -->
+            </div>
+
+            <div class="nav-center">
+                <a href="/">Home</a>
+                <a href="/about">About</a>
+                <a href="/dynamic_split">Dynamic Split</a>
+                <a href="/demo">Demo</a>
+            </div>
+
+            <div class="nav-right">
             {% if user %}
                 <div class="user-menu">
                     <a href="/dashboard">Dashboard</a>
-                    <a href="/profile">Profile</a>
-                    <span class="user-info">
-                        {% if user.picture %}
-                            <img src="{{ user.picture }}" alt="Profile" class="profile-pic">
-                        {% endif %}
-                        {{ user.name or user.email }}
-                    </span>
+                    <a href="/profile" class="profile-link">
+                        <span class="user-info">
+                            {% if user.picture %}
+                                <img src="{{ user.picture }}" alt="Profile" class="profile-pic">
+                            {% endif %}
+                            <span class="user-name">{{ user.name or user.email }}</span>
+                        </span>
+                    </a>
                     <a href="/logout" class="logout-btn">Logout</a>
                 </div>
             {% else %}
@@ -33,6 +41,7 @@
                     <a href="/login" class="login-btn">Login</a>
                 </div>
             {% endif %}
+            </div>
         </nav>
     </header>
 

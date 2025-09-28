@@ -8,10 +8,12 @@
         
         <!-- Social Login Button -->
         <div class="social-login">
-            <a href="/auth/login" class="auth-btn auth-btn-primary">
-                <i class="icon-lock"></i>
-                Sign in with Auth0
-            </a>
+            <div class="social-login-wrap">
+                <a href="/auth/login" class="auth-btn auth-btn-primary">
+                    <i class="icon-lock"></i>
+                    Sign in with Auth0
+                </a>
+            </div>
             <p class="login-subtitle">Supports Google, Facebook, GitHub, and more</p>
         </div>
         
@@ -66,7 +68,14 @@
 
 .social-login {
     margin-bottom: 30px;
-    margin-left: 1px;
+}
+
+/* Wrap and center the social login button */
+.social-login-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
 }
 
 .auth-btn {
@@ -79,7 +88,8 @@
     font-weight: 600;
     transition: all 0.3s ease;
     width: 100%;
-    margin-bottom: 10px;
+    max-width: 320px; /* prevent the button from stretching too wide */
+    margin: 0 auto 10px auto;
     border: none;
     cursor: pointer;
     font-size: 16px;
