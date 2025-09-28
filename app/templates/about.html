@@ -1,7 +1,52 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>About</h2>
-<p>This is a simple Flask app for beginners.</p>
-<p>Flask is a Python web framework.</p>
+<section class="about">
+  <h2>About This Project</h2>
+  <p>
+    This is our MHacks 2025 project: a lightweight, privacy‑first tool to help
+    roommates and teammates fairly split shared expenses and usage‑based bills.
+    It combines a quick expense splitter, time‑based bill tracking, and a demo
+    showcasing how computer vision can automate who’s currently using a shared resource.
+  </p>
+
+  <h3>What You Can Do</h3>
+  <ul>
+    <li><strong>Expense Splitter</strong>: Split a single expense equally, by percentage, or by exact amounts.</li>
+    <li><strong>Dynamic Split (Bill Tracking)</strong>: Track time spent by each user on recurring bills (e.g., Internet, Electricity) and generate a monthly report.</li>
+    <li><strong>Facial Recognition Demo</strong>: Prototype that recognizes a user to start/stop a timer automatically for hands‑free tracking.</li>
+    <li><strong>Secure Login</strong>: Auth0‑backed authentication with a simple dashboard and profile.</li>
+  </ul>
+
+  <h3>How It Works</h3>
+  <ol>
+    <li>Sign in to access your dashboard and profile.</li>
+    <li>Use <em>Dynamic Split</em> to track time per user and bill for the current month.</li>
+    <li>Run the <em>Demo</em> to see automatic recognition start a timer for a user.</li>
+    <li>At month‑end, enter bill rates and export a printable report with each user’s share.</li>
+    <li>For ad‑hoc costs, use the <em>Expense Splitter</em> to compute a fair split instantly.</li>
+  </ol>
+
+  <h3>Privacy & Security</h3>
+  <ul>
+    <li><strong>Local‑first</strong> demo: facial recognition and timers run on your machine during development.</li>
+    <li><strong>Auth0</strong> handles authentication—no passwords stored in our app.</li>
+    <li>Secrets are managed via a local <code>.env</code> file and are not committed to Git.</li>
+  </ul>
+
+  <h3>Tech Stack</h3>
+  <ul>
+    <li>Flask (Python) for the web app and routing</li>
+    <li>Auth0 for authentication</li>
+    <li>Vanilla HTML/CSS/JS for the UI</li>
+    <li>OpenCV/face recognition (demo) for local user detection</li>
+  </ul>
+
+  <h3>Get Involved</h3>
+  <p>
+    Have feedback or want to collaborate? Visit the <a href="/contact">Contact</a> page.
+    You can also try the <a href="/dynamic_split">Dynamic Split</a> view or the
+    <a href="/demo">Demo</a> from the navigation.
+  </p>
+</section>
 {% endblock %}

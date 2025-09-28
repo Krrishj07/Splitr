@@ -37,7 +37,12 @@ class Auth0Service:
         nonce = generate_token()
         session['auth_nonce'] = nonce
         
-        redirect_uri = url_for('callback', _external=True)
+        # Build redirect_uri, honoring EXTERNAL_BASE_URL if provided
+        if Config.EXTERNAL_BASE_URL:
+            base = Config.EXTERNAL_BASE_URL.rstrip('/')
+            redirect_uri = f"{base}{url_for('callback')}"
+        else:
+            redirect_uri = url_for('callback', _external=True)
         return self.auth0.authorize_redirect(
             redirect_uri,
             nonce=nonce
@@ -60,7 +65,7 @@ class Auth0Service:
             'authParams': {
                 'scope': 'openid profile email',
                 'response_type': 'code',
-                'redirect_uri': url_for('callback', _external=True),
+                'redirect_uri': (Config.EXTERNAL_BASE_URL.rstrip('/') + url_for('callback')) if Config.EXTERNAL_BASE_URL else url_for('callback', _external=True),
                 'nonce': nonce
             }
         }
@@ -106,7 +111,11 @@ class Auth0Service:
     def logout(self):
         """Logout user"""
         session.clear()
-        return_url = url_for('index', _external=True)
+        if Config.EXTERNAL_BASE_URL:
+            base = Config.EXTERNAL_BASE_URL.rstrip('/')
+            return_url = f"{base}{url_for('index')}"
+        else:
+            return_url = url_for('index', _external=True)
         return redirect(
             f"https://{Config.AUTH0_DOMAIN}/v2/logout?"
             f"returnTo={return_url}&"
