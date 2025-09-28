@@ -1,122 +1,231 @@
-/* Custom CSS for My Web App */
+/* Simple CSS for beginners */
 
-/* Global Styles */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 1.6;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
     color: #333;
 }
 
-/* Navigation */
-.navbar-brand img {
-    filter: brightness(0) invert(1);
+header {
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    text-align: center;
 }
 
-/* Cards */
-.card {
-    border: none;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+header h1 {
+    margin: 0;
+    font-size: 2em;
 }
 
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+nav {
+    margin-top: 10px;
 }
 
-/* Buttons */
-.btn {
-    border-radius: 25px;
-    padding: 10px 25px;
-    font-weight: 500;
-    transition: all 0.3s ease;
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    padding: 5px 10px;
+    border-radius: 5px;
 }
 
-.btn-primary {
-    background: linear-gradient(45deg, #007bff, #0056b3);
-    border: none;
+nav a:hover {
+    background-color: #555;
 }
 
-.btn-primary:hover {
-    background: linear-gradient(45deg, #0056b3, #004085);
-    transform: translateY(-2px);
-}
-
-/* Forms */
-.form-control {
+main {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: white;
     border-radius: 10px;
-    border: 2px solid #e9ecef;
-    padding: 12px 15px;
-    transition: border-color 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-.form-control:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+h2 {
+    color: #333;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
 }
 
-/* Footer */
+.feature-box, .info-box {
+    background-color: #f8f9fa;
+    padding: 15px;
+    margin: 15px 0;
+    border-left: 4px solid #007bff;
+    border-radius: 5px;
+}
+
+.feature-box h3, .info-box h3 {
+    margin-top: 0;
+    color: #007bff;
+}
+
+ul {
+    padding-left: 20px;
+}
+
+li {
+    margin: 5px 0;
+}
+
+/* Form styles */
+form {
+    max-width: 500px;
+}
+
+.form-group {
+    margin: 15px 0;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.success-message {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 15px;
+    border-radius: 5px;
+    margin: 15px 0;
+    border: 1px solid #c3e6cb;
+}
+
 footer {
-    margin-top: auto;
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
 }
 
-/* Responsive Design */
+footer p {
+    margin: 0;
+}
+
+/* Bill Tracking Styles */
+.bill-controls {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+    display: flex;
+    gap: 20px;
+    align-items: end;
+    flex-wrap: wrap;
+}
+
+.bill-controls .form-group {
+    margin: 0;
+    min-width: 150px;
+}
+
+.bill-controls select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.bill-controls button {
+    height: 40px;
+    padding: 0 20px;
+    margin: 0;
+}
+
+.bill-table-container {
+    margin: 20px 0;
+    overflow-x: auto;
+}
+
+#bill-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+#bill-table th {
+    background-color: #333;
+    color: white;
+    padding: 15px;
+    text-align: left;
+    font-weight: bold;
+}
+
+#bill-table td {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+#bill-table tr:hover {
+    background-color: #f8f9fa;
+}
+
+.current-timer {
+    background-color: #e9ecef;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    margin: 20px 0;
+}
+
+#timer-display {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #007bff;
+    margin: 10px 0;
+    font-family: 'Courier New', monospace;
+}
+
+#current-bill-info {
+    font-size: 1.2em;
+    color: #666;
+    margin-top: 10px;
+}
+
+/* Responsive design */
 @media (max-width: 768px) {
-    .display-4 {
-        font-size: 2rem;
+    .bill-controls {
+        flex-direction: column;
+        align-items: stretch;
     }
     
-    .card {
-        margin-bottom: 1rem;
+    .bill-controls .form-group {
+        min-width: auto;
     }
-}
-
-/* Custom Animations */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
+    
+    #timer-display {
+        font-size: 2em;
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.fade-in-up {
-    animation: fadeInUp 0.6s ease-out;
-}
-
-/* Loading Spinner */
-.spinner {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 3px solid #f3f3f3;
-    border-top: 3px solid #007bff;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* Alert Styles */
-.alert {
-    border-radius: 10px;
-    border: none;
-}
-
-/* Utility Classes */
-.text-gradient {
-    background: linear-gradient(45deg, #007bff, #28a745);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.shadow-custom {
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
