@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Demo: Light Switch (simulated)</h2>
+<div id="status">Idle</div>
+<button id="switch">Turn On (recognize)</button>
+
+<h3>Currently recognized</h3>
+<div id="current">Nobody</div>
+
+<h3>Active timers</h3>
+<ul id="timers"></ul>
+
+<h3>Totals</h3>
+<ul id="totals"></ul>
+
+<script>
+const switchBtn = document.getElementById('switch');
+const statusEl = document.getElementById('status');
+const timersEl = document.getElementById('timers');
+const totalsEl = document.getElementById('totals');
+
+let lastRecognized = null;
+
+async function fetchStatus() {
+  try {
+    const res = await fetch('/demo/status');
+    const data = await res.json();
+    // populate current
+    const cur = data.current;
+    if (cur && cur.name) {
+      document.getElementById('current').textContent = `${cur.name} — ${Math.round(cur.elapsed)}s`;
+    } else {
+      document.getElementById('current').textContent = 'Nobody';
+    }
+
+    // populate timers
+    timersEl.innerHTML = '';
+    const timers = data.timers || {};
+    const names = Object.keys(timers);
+    if (names.length === 0) {
+      timersEl.innerHTML = '<li>No active timers</li>';
+    } else {
+      for (const name of names) {
+        const li = document.createElement('li');
+        const secs = Math.round(timers[name]);
+        li.innerHTML = `${name} — ${secs}s <button data-name="${name}" class="stop-btn">Stop</button>`;
+        timersEl.appendChild(li);
+      }
+    }
+
+    // totals
+    totalsEl.innerHTML = '';
+    const totals = data.totals || {};
+    const tnames = Object.keys(totals);
+    if (tnames.length === 0) {
+      totalsEl.innerHTML = '<li>No totals yet</li>';
+    } else {
+      for (const name of tnames) {
+        const li = document.createElement('li');
+        li.textContent = `${name} — ${Math.round(totals[name])}s`;
+        totalsEl.appendChild(li);
+      }
+    }
+
+    // wire stop buttons
+    document.querySelectorAll('.stop-btn').forEach(b => {
+      b.onclick = async (ev) => {
+        const name = ev.target.dataset.name;
+        const res = await fetch('/demo/stop', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({name}) });
+        const d = await res.json();
+        if (d.status === 'ok') {
+          statusEl.textContent = `Stopped ${name}: ${Math.round(d.elapsed)}s (total ${Math.round(d.total)}s)`;
+          fetchStatus();
+        } else {
+          statusEl.textContent = 'Stop failed: ' + d.message;
+        }
+      };
+    });
+  } catch (e) {
+    console.error('status fetch failed', e);
+  }
+}
+
+setInterval(fetchStatus, 1000);
+fetchStatus();
+
+switchBtn.addEventListener('click', async () => {
+    statusEl.textContent = 'Opening camera and recognizing... (press q to cancel)';
+    switchBtn.disabled = true;
+    try {
+        const res = await fetch('/demo/recognize', { method: 'POST' });
+        const data = await res.json();
+        if (data.status === 'ok') {
+            statusEl.textContent = `Recognized: ${data.name}`;
+      if (data.name && data.name !== 'Unknown') {
+        lastRecognized = data.name;
+        statusEl.textContent = `Recognized: ${data.name}. Timer started.`;
+        // refresh status immediately
+        fetchStatus();
+      }
+        } else {
+            statusEl.textContent = 'Recognition error: ' + data.message;
+        }
+    } catch (e) {
+        statusEl.textContent = 'Request failed: ' + e;
+    }
+    switchBtn.disabled = false;
+});
+</script>
+
+{% endblock %}
