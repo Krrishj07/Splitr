@@ -13,7 +13,7 @@ A modern Flask web application featuring secure authentication with Auth0, inclu
 - **🔐 Protected Routes**: Dashboard and profile pages with authentication requirements
 
 ## Installation
-
+    
 1. **Clone or download the project**
    ```bash
    git clone <repository-url>
